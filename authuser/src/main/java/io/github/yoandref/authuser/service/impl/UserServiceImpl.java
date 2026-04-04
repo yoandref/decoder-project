@@ -1,0 +1,50 @@
+package io.github.yoandref.authuser.service.impl;
+
+import io.github.yoandref.authuser.models.UserModel;
+import io.github.yoandref.authuser.repositories.UserRepository;
+import io.github.yoandref.authuser.service.UserService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+@Service
+public class UserServiceImpl implements UserService {
+
+    private final UserRepository userRepository;
+
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Override
+    public List<UserModel> findAll() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public Optional<UserModel> findById(UUID userId) {
+        return userRepository.findById(userId);
+    }
+
+    @Override
+    public void deleteById(UUID userId) {
+        userRepository.deleteById(userId);
+    }
+
+    @Override
+    public void save(UserModel userModel) {
+        userRepository.save(userModel);
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+}
