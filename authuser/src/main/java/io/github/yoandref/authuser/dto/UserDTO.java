@@ -2,6 +2,7 @@ package io.github.yoandref.authuser.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
+import io.github.yoandref.authuser.validation.UsernameConstraints;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -24,6 +25,7 @@ public class UserDTO {
 
     @NotBlank(groups = UserView.RegistrationPost.class)
     @JsonView(UserView.RegistrationPost.class)
+    @UsernameConstraints(groups = UserView.RegistrationPost.class)
     private String username;
 
     @Email(groups = UserView.RegistrationPost.class)
@@ -31,12 +33,12 @@ public class UserDTO {
     @JsonView(UserView.RegistrationPost.class)
     private String email;
 
-    @Size(min = 7)
+    @Size(min = 7, groups = {UserView.RegistrationPost.class, UserView.PasswordPut.class})
     @NotBlank(groups = {UserView.RegistrationPost.class, UserView.PasswordPut.class})
     @JsonView({UserView.RegistrationPost.class, UserView.PasswordPut.class})
     private String password;
 
-    @Size(min = 7)
+    @Size(min = 7, groups = {UserView.RegistrationPost.class, UserView.PasswordPut.class})
     @NotBlank(groups = UserView.PasswordPut.class)
     @JsonView({UserView.PasswordPut.class})
     private String oldPassword;
