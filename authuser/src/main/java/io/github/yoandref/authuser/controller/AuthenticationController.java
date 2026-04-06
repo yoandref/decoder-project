@@ -1,5 +1,6 @@
 package io.github.yoandref.authuser.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.util.BeanUtil;
 import io.github.yoandref.authuser.dto.UserDTO;
 import io.github.yoandref.authuser.enums.UserStatus;
@@ -26,7 +27,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Object> registerUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<Object> registerUser(@RequestBody @JsonView(UserDTO.UserView.RegistrationPost.class) UserDTO userDTO) {
         if(userService.existsByUsername(userDTO.getUsername())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Username is already taken!");
         }
