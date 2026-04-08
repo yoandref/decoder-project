@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import io.github.yoandref.authuser.dto.UserDTO;
 import io.github.yoandref.authuser.models.UserModel;
 import io.github.yoandref.authuser.service.UserService;
+import io.github.yoandref.authuser.specifications.SpecificationTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -28,9 +31,15 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public ResponseEntity<Page<UserModel>> getAllUsers(@PageableDefault(page = 0, size = 10, sort = "userId", direction = Sort.Direction.ASC)
+    public ResponseEntity<Page<UserModel>> getAllUsers(SpecificationTemplate.UserSpec spec,
+                                                       @PageableDefault(page = 0, size = 10, sort = "userId", direction = Sort.Direction.ASC)
                                                        Pageable pageable) {
-        Page<UserModel> userModelPage = userService.findAll(pageable);
+        Page<UserModel> userModelPage = userService.findAll(pageable, spec);
+        if(!userModelPage.isEmpty()) {
+            for(UserModel user : userModelPage.toList()) {
+                user.add(linkTo(methodOn(UserController.class).getOneUser(user.getUserId())).withSelfRel());
+            }
+        }
         return ResponseEntity.status(HttpStatus.OK).body(userModelPage);
     }
 
@@ -80,7 +89,7 @@ public class UserController {
         Optional<UserModel> userModelOptional = userService.findById(userId);
         if (userModelOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found!");
-        } if(!userModelOptional.get().getPassword().equals(userDTO.getPassword())) {
+        } if(!userModelOptional.get().getPassword().equals(userDTO.getOldPassword())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Mismatched old password!");
         } else {
             var userModel = userModelOptional.get();
