@@ -1,7 +1,6 @@
 package io.github.yoandref.authuser.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.util.BeanUtil;
 import io.github.yoandref.authuser.dto.UserDTO;
 import io.github.yoandref.authuser.enums.UserStatus;
 import io.github.yoandref.authuser.enums.UserType;

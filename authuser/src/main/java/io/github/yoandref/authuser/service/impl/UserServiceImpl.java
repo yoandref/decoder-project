@@ -6,6 +6,7 @@ import io.github.yoandref.authuser.service.UserService;
 import io.github.yoandref.authuser.specifications.SpecificationTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,12 +53,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserModel> findAll(Pageable pageable) {
+    public Page<UserModel> findAll(Specification<UserModel> and, Pageable pageable) {
         return userRepository.findAll(pageable);
     }
 
     @Override
-    public Page<UserModel> findAll(Pageable pageable, SpecificationTemplate.UserSpec spec) {
+    public Page<UserModel> findAll(SpecificationTemplate.UserSpec spec, Pageable pageable) {
         return userRepository.findAll(spec, pageable);
     }
 }
